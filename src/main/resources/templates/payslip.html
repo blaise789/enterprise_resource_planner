@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="'Payslip - ' + ${employee.code} + ' - ' + ${monthName} + '/' + ${payslip.year}">Payslip</title>
+    <style>
+        /* Basic styling for the PDF */
+        body { font-family: sans-serif; margin: 20mm; color: #333; }
+        .container { width: 100%; max-width: 800px; margin: 0 auto; border: 1px solid #ccc; padding: 20px; }
+        h1, h2 { text-align: center; color: #333; }
+        h1 { font-size: 1.5em; margin-bottom: 5px; }
+        h2 { font-size: 1.2em; margin-top: 0; margin-bottom: 20px; color: #555; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .header-info td, .header-info th { width: 50%; }
+        .financial-details td, .deductions td, .summary-table td { text-align: right; }
+        .summary-table { margin-top: 20px; }
+        .summary-table th { width: 50%; }
+        .summary-table td { font-weight: bold; }
+        .status { text-align: center; font-weight: bold; margin-top: 20px; padding: 10px; border: 1px dashed #000; display: inline-block; margin: 0 auto; display: block; width: fit-content; }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .total-row td { font-weight: bold; border-top: 2px solid #333; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1 th:text="'Payslip - ' + ${monthName} + ' ' + ${payslip.year}">Payslip - Month Year</h1>
+    <h2 th:text="'For ' + ${employee.firstName} + ' ' + ${employee.lastName}">For Employee Name</h2>
+    <h2>Government of Rwanda</h2> <!-- Replace with actual institution name if available via activeEmployment or Employee -->
+
+    <div class="header-info">
+        <table>
+            <tr>
+                <th>Employee ID:</th>
+                <td th:text="${employee.code}">EMP123</td>
+                <th>Payslip ID:</th>
+                <td th:text="${payslip.id}">PS001</td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td th:text="${employee.email}">employee@example.com</td>
+                <th>Mobile:</th>
+                <td th:text="${employee.mobile ?: 'N/A'}">N/A</td> <!-- Handle potential null mobile -->
+            </tr>
+            <!-- Display details from the ACTIVE employment record -->
+            <tr th:if="${activeEmployment != null}">
+                <th>Department:</th>
+                <td th:text="${activeEmployment.department}">IT</td>
+                <th>Position:</th>
+                <td th:text="${activeEmployment.position}">Developer</td>
+            </tr>
+            <tr th:if="${activeEmployment != null}">
+                <th>Joining Date:</th>
+                <td th:text="${#dates.format(activeEmployment.joiningDate, 'dd-MMM-yyyy')}">01-Jan-2023</td>
+                <th>Base Salary:</th>
+                <td th:text="${currencyFormat.format(activeEmployment.baseSalary)}">70,000.00</td>
+            </tr>
+            <!-- Handle case where activeEmployment might not be found -->
+            <tr th:unless="${activeEmployment != null}">
+                <th>Employment Details:</th>
+                <td colspan="3">Active employment details not found for this employee.</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="financial-details">
+        <h3>Earnings</h3>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th class="text-right">Amount (RWF)</th>
+            </tr>
+            <!-- Base Salary is often shown here, linking to the active employment -->
+            <tr th:if="${activeEmployment != null}">
+                <td>Base Salary</td>
+                <td class="text-right" th:text="${currencyFormat.format(activeEmployment.baseSalary)}">70,000.00</td>
+            </tr>
+            <tr th:unless="${activeEmployment != null}">
+                <td>Base Salary</td>
+                <td class="text-right">N/A</td>
+            </tr>
+            <tr>
+                <td>Housing Allowance</td>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.houseAmount)}">9,800.00</td>
+            </tr>
+            <tr>
+                <td>Transport Allowance</td>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.transportAmount)}">9,800.00</td>
+            </tr>
+            <!-- Add other earnings here if applicable -->
+            <tr class="total-row">
+                <td class="text-right">Total Earnings:</td>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.grossSalary)}">89,600.00</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="deductions">
+        <h3>Deductions</h3>
+        <table>
+            <tr>
+                <th>Description</th>
+                <th class="text-right">Amount (RWF)</th>
+            </tr>
+            <tr>
+                <td>Employee Tax</td>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.employeeTaxedAmount)}">21,000.00</td>
+            </tr>
+            <tr>
+                <td>Pension</td>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.pensionAmount)}">4,200.00</td>
+            </tr>
+            <tr>
+                <td>Medical Insurance</td>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.medicalInsuranceAmount)}">3,500.00</td>
+            </tr>
+            <tr>
+                <td>Others</td>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.otherTaxedAmount)}">3,500.00</td>
+            </tr>
+            <!-- Add other deductions here if applicable -->
+            <tr class="total-row">
+                <td class="text-right">Total Deductions:</td>
+                <!-- Calculate total deductions sum directly in template for display -->
+                <td class="text-right" th:text="${currencyFormat.format(payslip.employeeTaxedAmount.add(payslip.pensionAmount).add(payslip.medicalInsuranceAmount).add(payslip.otherTaxedAmount))}">32,200.00</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="summary-table">
+        <table>
+            <tr>
+                <th>Gross Salary:</th>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.grossSalary)}">89,600.00</td>
+            </tr>
+            <tr>
+                <th>Total Deductions:</th>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.employeeTaxedAmount.add(payslip.pensionAmount).add(payslip.medicalInsuranceAmount).add(payslip.otherTaxedAmount))}">32,200.00</td>
+            </tr>
+            <tr class="total-row">
+                <th>Net Salary:</th>
+                <td class="text-right" th:text="${currencyFormat.format(payslip.netSalary)}">57,400.00</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="status" th:text="'Status: ' + ${payslip.status.name()}">Status: PENDING</div>
+
+
+    <div style="margin-top: 30px; font-size: 0.9em; text-align: center; color: #555;">
+        Generated on: <span th:text="${#dates.format(#dates.createNow(), 'dd-MMM-yyyy HH:mm')}"></span>
+    </div>
+
+</div>
+</body>
+</html>
