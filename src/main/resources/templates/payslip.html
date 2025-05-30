@@ -53,9 +53,9 @@
             </tr>
             <tr th:if="${activeEmployment != null}">
                 <th>Joining Date:</th>
-                <td th:text="${#dates.format(activeEmployment.joiningDate, 'dd-MMM-yyyy')}">01-Jan-2023</td>
+                <td th:text="${#temporals.format(activeEmployment.joiningDate, 'dd-MMM-yyyy')}">01-Jan-2023</td>
                 <th>Base Salary:</th>
-                <td th:text="${currencyFormat.format(activeEmployment.baseSalary)}">70,000.00</td>
+                <td th:text="${currencyFormatter.format(activeEmployment.baseSalary)}">70,000.00</td>
             </tr>
             <!-- Handle case where activeEmployment might not be found -->
             <tr th:unless="${activeEmployment != null}">
@@ -75,7 +75,7 @@
             <!-- Base Salary is often shown here, linking to the active employment -->
             <tr th:if="${activeEmployment != null}">
                 <td>Base Salary</td>
-                <td class="text-right" th:text="${currencyFormat.format(activeEmployment.baseSalary)}">70,000.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(activeEmployment.baseSalary)}">70,000.00</td>
             </tr>
             <tr th:unless="${activeEmployment != null}">
                 <td>Base Salary</td>
@@ -83,16 +83,16 @@
             </tr>
             <tr>
                 <td>Housing Allowance</td>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.houseAmount)}">9,800.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.houseAmount)}">9,800.00</td>
             </tr>
             <tr>
                 <td>Transport Allowance</td>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.transportAmount)}">9,800.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.transportAmount)}">9,800.00</td>
             </tr>
             <!-- Add other earnings here if applicable -->
             <tr class="total-row">
                 <td class="text-right">Total Earnings:</td>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.grossSalary)}">89,600.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.grossSalary)}">89,600.00</td>
             </tr>
         </table>
     </div>
@@ -106,25 +106,25 @@
             </tr>
             <tr>
                 <td>Employee Tax</td>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.employeeTaxedAmount)}">21,000.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.employeeTaxedAmount)}">21,000.00</td>
             </tr>
             <tr>
                 <td>Pension</td>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.pensionAmount)}">4,200.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.pensionAmount)}">4,200.00</td>
             </tr>
             <tr>
                 <td>Medical Insurance</td>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.medicalInsuranceAmount)}">3,500.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.medicalInsuranceAmount)}">3,500.00</td>
             </tr>
             <tr>
                 <td>Others</td>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.otherTaxedAmount)}">3,500.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.otherTaxedAmount)}">3,500.00</td>
             </tr>
             <!-- Add other deductions here if applicable -->
             <tr class="total-row">
                 <td class="text-right">Total Deductions:</td>
                 <!-- Calculate total deductions sum directly in template for display -->
-                <td class="text-right" th:text="${currencyFormat.format(payslip.employeeTaxedAmount.add(payslip.pensionAmount).add(payslip.medicalInsuranceAmount).add(payslip.otherTaxedAmount))}">32,200.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.employeeTaxedAmount.add(payslip.pensionAmount).add(payslip.medicalInsuranceAmount).add(payslip.otherTaxedAmount))}">32,200.00</td>
             </tr>
         </table>
     </div>
@@ -133,15 +133,15 @@
         <table>
             <tr>
                 <th>Gross Salary:</th>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.grossSalary)}">89,600.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.grossSalary)}">89,600.00</td>
             </tr>
             <tr>
                 <th>Total Deductions:</th>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.employeeTaxedAmount.add(payslip.pensionAmount).add(payslip.medicalInsuranceAmount).add(payslip.otherTaxedAmount))}">32,200.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.employeeTaxedAmount.add(payslip.pensionAmount).add(payslip.medicalInsuranceAmount).add(payslip.otherTaxedAmount))}">32,200.00</td>
             </tr>
             <tr class="total-row">
                 <th>Net Salary:</th>
-                <td class="text-right" th:text="${currencyFormat.format(payslip.netSalary)}">57,400.00</td>
+                <td class="text-right" th:text="${currencyFormatter.format(payslip.netSalary)}">57,400.00</td>
             </tr>
         </table>
     </div>

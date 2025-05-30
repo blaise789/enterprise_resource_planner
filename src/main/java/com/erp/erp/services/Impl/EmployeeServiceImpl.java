@@ -8,6 +8,7 @@ import com.erp.erp.entity.Role;
 import com.erp.erp.enums.ERole;
 import com.erp.erp.enums.EmployeeStatus;
 import com.erp.erp.exceptions.ResourceNotFoundException;
+import com.erp.erp.exceptions.ValidationException;
 import com.erp.erp.repository.EmployeeRepository;
 import com.erp.erp.repository.RoleRepository;
 import com.erp.erp.services.EmployeeService;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -55,9 +57,15 @@ public class EmployeeServiceImpl implements EmployeeService {
             roles.add(userRole);
         } else {
             employeeRequestDTO.getRoles().forEach(roleStr -> {
-                Role role = roleRepository.findByName(ERole.valueOf(roleStr))
-                        .orElseThrow(() -> new RuntimeException("Error: Role " + roleStr + " is not found."));
-                roles.add(role);
+                try {
+                    ERole roleEnum = ERole.valueOf(roleStr);
+                    Role role = roleRepository.findByName(roleEnum)
+                            .orElseThrow(() -> new ValidationException("Error: Role " + roleStr + " is not found in the database."));
+                    roles.add(role);
+                } catch (IllegalArgumentException e) {
+                    throw new ValidationException("Error: Invalid role '" + roleStr + "'. Valid roles are: " + 
+                            String.join(", ", Arrays.stream(ERole.values()).map(Enum::name).toArray(String[]::new)));
+                }
             });
         }
         employee.setRoles(roles);
@@ -107,9 +115,15 @@ public class EmployeeServiceImpl implements EmployeeService {
         if (employeeRequestDTO.getRoles() != null && !employeeRequestDTO.getRoles().isEmpty()) {
             Set<Role> roles = new HashSet<>();
             employeeRequestDTO.getRoles().forEach(roleStr -> {
-                Role role = roleRepository.findByName(ERole.valueOf(roleStr))
-                        .orElseThrow(() -> new RuntimeException("Error: Role " + roleStr + " is not found."));
-                roles.add(role);
+                try {
+                    ERole roleEnum = ERole.valueOf(roleStr);
+                    Role role = roleRepository.findByName(roleEnum)
+                            .orElseThrow(() -> new ValidationException("Error: Role " + roleStr + " is not found in the database."));
+                    roles.add(role);
+                } catch (IllegalArgumentException e) {
+                    throw new ValidationException("Error: Invalid role '" + roleStr + "'. Valid roles are: " + 
+                            String.join(", ", Arrays.stream(ERole.values()).map(Enum::name).toArray(String[]::new)));
+                }
             });
             employee.setRoles(roles);
         }

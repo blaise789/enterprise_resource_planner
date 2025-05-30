@@ -1,21 +1,18 @@
 package com.erp.erp.dto.request;
 
-import com.erp.erp.enums.ERole;
+import java.time.LocalDate;
+
 import com.erp.erp.enums.EmployeeStatus;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import java.time.LocalDate;
-import java.util.Set;
 
-@Data
-public class EmployeeRequestDTO {
-    @NotBlank(message = "Employee code cannot be blank")
+public class AdminRequestDTO {
+    
+      @NotBlank(message = "Employee code cannot be blank")
     @Size(min = 3, max = 20, message = "Employee code must be between 3 and 20 characters")
     private String code;
 
@@ -43,12 +40,4 @@ public class EmployeeRequestDTO {
 
     @NotNull(message = "Status cannot be null")
     private EmployeeStatus status;
-
-    @NotNull(message = "Roles cannot be null")
-    @Size(min = 1, message = "Employee must have at least one role")
-    @ArraySchema(schema = @Schema(implementation = String.class, 
-        description = "Employee roles", 
-        allowableValues = {"ROLE_EMPLOYEE", "ROLE_MANAGER", "ROLE_ADMIN"},
-        example = "ROLE_EMPLOYEE"))
-    private Set<String> roles; // Using String to maintain compatibility with existing code
 }

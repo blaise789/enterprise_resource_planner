@@ -97,13 +97,13 @@ public class Seeder implements CommandLineRunner {
 
     private void initializeDefaultUsers() {
         // Admin User
-        if (employeeRepository.findByEmail("admin@rwerp.gov").isEmpty()) {
+        if (employeeRepository.findByEmail("admin@gmail.com").isEmpty()) {
             Employee admin = new Employee();
             admin.setCode("ADM001");
             admin.setFirstName("Admin");
             admin.setLastName("User");
-            admin.setEmail("admin@rwerp.gov");
-            admin.setPassword(passwordEncoder.encode("AdminP@ssw0rd1"));
+            admin.setEmail("admin@gmail.com");
+            admin.setPassword(passwordEncoder.encode("admin@123"));
             admin.setMobile("0788000001");
             admin.setDateOfBirth(LocalDate.of(1980, 1, 1));
             admin.setStatus(EmployeeStatus.ACTIVE);
@@ -112,17 +112,17 @@ public class Seeder implements CommandLineRunner {
             roleRepository.findByName(ERole.ROLE_MANAGER).ifPresent(adminRoles::add); // Admin might also have manager capabilities
             admin.setRoles(adminRoles);
             employeeRepository.save(admin);
-            logger.info("Created default admin user: admin@rwerp.gov");
         }
+        logger.info("Created default admin user: admin@gmail.com");
 
         // Manager User
-        if (employeeRepository.findByEmail("manager@rwerp.gov").isEmpty()) {
+        if (employeeRepository.findByEmail("manager@gmail.com").isEmpty()) {
             Employee manager = new Employee();
             manager.setCode("MGR001");
             manager.setFirstName("Manager");
-            manager.setLastName("UserOne");
-            manager.setEmail("manager@rwerp.gov");
-            manager.setPassword(passwordEncoder.encode("ManagerP@ss1"));
+            manager.setLastName("manager user");
+            manager.setEmail("manager@gmail.com");
+            manager.setPassword(passwordEncoder.encode("manager@123"));
             manager.setMobile("0788000002");
             manager.setDateOfBirth(LocalDate.of(1985, 5, 5));
             manager.setStatus(EmployeeStatus.ACTIVE);
@@ -130,17 +130,17 @@ public class Seeder implements CommandLineRunner {
             roleRepository.findByName(ERole.ROLE_MANAGER).ifPresent(managerRoles::add);
             manager.setRoles(managerRoles);
             employeeRepository.save(manager);
-            logger.info("Created default manager user: manager@rwerp.gov");
+            logger.info("Created default manager user: manager@gmail.com");
         }
 
         // Employee User
-        if (employeeRepository.findByEmail("employee@rwerp.gov").isEmpty()) {
+        if (employeeRepository.findByEmail("employee@gmail.com").isEmpty()) {
             Employee employee = new Employee();
             employee.setCode("EMP001");
             employee.setFirstName("Employee");
-            employee.setLastName("UserTest");
-            employee.setEmail("employee@rwerp.gov");
-            employee.setPassword(passwordEncoder.encode("EmployeeP@ss1"));
+            employee.setLastName("employee test");
+            employee.setEmail("employee@gmail.com");
+            employee.setPassword(passwordEncoder.encode("employee@123"));
             employee.setMobile("0788000003");
             employee.setDateOfBirth(LocalDate.of(1990, 10, 10));
             employee.setStatus(EmployeeStatus.ACTIVE);
@@ -148,7 +148,7 @@ public class Seeder implements CommandLineRunner {
             roleRepository.findByName(ERole.ROLE_EMPLOYEE).ifPresent(employeeRoles::add);
             employee.setRoles(employeeRoles);
             employeeRepository.save(employee);
-            logger.info("Created default employee user: employee@rwerp.gov");
+            logger.info("Created default employee user: employee@gmail.com");
         }
     }
 }

@@ -9,4 +9,5 @@ public interface PayRollService {
     PayslipResponseDTO getPayslipForEmployee(String employeeCode, int month, int year);
     List<PayslipResponseDTO> getAllPayslipsForMonthYear(int month, int year);
     void processAndSendSalaryNotifications(int month, int year);
+    void processUnsentAndFailedEmails();
 }
